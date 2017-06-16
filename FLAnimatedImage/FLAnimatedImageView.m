@@ -95,6 +95,13 @@
 
 - (void)setAnimatedImage:(FLAnimatedImage *)animatedImage
 {
+    [self setAnimatedImage:animatedImage startingAtFrame:0];
+}
+
+
+- (void)setAnimatedImage:(FLAnimatedImage *)animatedImage startingAtFrame:(NSUInteger)frameToStartOn
+{
+
     if (![_animatedImage isEqual:animatedImage]) {
         if (animatedImage) {
             // Clear out the image.
@@ -110,8 +117,10 @@
         
         _animatedImage = animatedImage;
         
-        self.currentFrame = animatedImage.posterImage;
-        self.currentFrameIndex = 0;
+        // Set the frame properties based on the starting frame
+        // Note: Setting the image lazily may cause a "flash" before the new frame is set if that frame hasn't been cached yet.
+        self.currentFrame = frameToStartOn == 0 ? animatedImage.posterImage : [animatedImage imageLazilyCachedAtIndex:frameToStartOn];
+        self.currentFrameIndex = frameToStartOn;
         if (animatedImage.loopCount > 0) {
             self.loopCountdown = animatedImage.loopCount;
         } else {
