@@ -33,4 +33,8 @@
 // To keep scrolling smooth on single-core devices such as iPhone 3GS/4 and iPod Touch 4th gen, the default run loop mode is NSDefaultRunLoopMode. Otherwise, the default is NSDefaultRunLoopMode.
 @property (nonatomic, copy) NSString *runLoopMode;
 
+// Sets the animated image starting at the current frame. Defaults to the first frame if no current image.
+// The image being set is intended to be the same image but of better quality of the current image.
+- (void)setAnimatedImageReplacingPoorerQualityImageAtCurrentFrame:(FLAnimatedImage *)animatedImage;
+
 @end

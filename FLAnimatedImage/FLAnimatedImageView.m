@@ -95,6 +95,17 @@
 
 - (void)setAnimatedImage:(FLAnimatedImage *)animatedImage
 {
+    [self setAnimatedImage:animatedImage replacingPoorerQualityImageAtCurrentFrame:false];
+}
+
+- (void)setAnimatedImageReplacingPoorerQualityImageAtCurrentFrame:(FLAnimatedImage *)animatedImage
+{
+    [self setAnimatedImage:animatedImage replacingPoorerQualityImageAtCurrentFrame:true];
+}
+
+- (void)setAnimatedImage:(FLAnimatedImage *)animatedImage replacingPoorerQualityImageAtCurrentFrame:(BOOL)isReplacingPoorerQualityImage
+{
+
     if (![_animatedImage isEqual:animatedImage]) {
         if (animatedImage) {
             // Clear out the image.
@@ -108,10 +119,15 @@
             [self stopAnimating];
         }
         
+        // Before setting the image property, get an update on the quality flag based on if the current image is nil, in which case we begin at the start as usual.
+        BOOL actuallyReplacingPoorerQualityImage = isReplacingPoorerQualityImage && _animatedImage != nil;
+
+        // Set the new image reference.
         _animatedImage = animatedImage;
         
-        self.currentFrame = animatedImage.posterImage;
-        self.currentFrameIndex = 0;
+        // If we're replacing a poorer quality image, use the current frame image and index. Otherwise, use the poster image and frame zero as usual.
+        self.currentFrame = actuallyReplacingPoorerQualityImage ? self.currentFrame : animatedImage.posterImage;
+        self.currentFrameIndex = actuallyReplacingPoorerQualityImage ? self.currentFrameIndex : 0;
         if (animatedImage.loopCount > 0) {
             self.loopCountdown = animatedImage.loopCount;
         } else {
